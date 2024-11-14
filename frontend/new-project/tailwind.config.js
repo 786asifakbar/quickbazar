@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {},
+    // colors: {
+    //   'custom-blue': '#1E40AF',
+    // },
   },
   plugins: [],
 }
