@@ -7,11 +7,13 @@ import ProductList from './pages/ProductList';
 import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
+import Header from './components/Header';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+      <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
