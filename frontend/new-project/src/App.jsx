@@ -14,8 +14,8 @@ import ProductList from './pages/ProductList';
 import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
-
-
+import ProductPage from './pages/ProductPage';
+import Footer from './components/Footer';
 
 
 function App() {
@@ -26,6 +26,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products" element={<Products />} />
@@ -36,6 +38,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </Router>
     </AuthProvider>
   );
