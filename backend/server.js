@@ -1,43 +1,40 @@
 const express = require("express");
-const fs = require("fs");
 const cors = require("cors");
+const Stripe = require("stripe");
 const app = express();
-const PORT = 5000;
 
-// Middleware
+const stripe = new Stripe("sk_test_your_secret_key"); // Replace with your Stripe secret key
+
 app.use(cors());
 app.use(express.json());
 
-// POST route to handle form submissions
-app.post("/api/contact", (req, res) => {
-  const { name, email, message } = req.body;
+app.post("/api/checkout", async (req, res) => {
+  const { items } = req.body;
 
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
+  const lineItems = items.map((item) => ({
+    price_data: {
+      currency: "usd",
+      product_data: {
+        name: item.name,
+      },
+      unit_amount: Math.round(item.price * 100),
+    },
+    quantity: item.quantity,
+  }));
 
-  // Save data to a file (for demonstration purposes)
-  const newMessage = { name, email, message, date: new Date().toISOString() };
-
-  fs.readFile("messages.json", "utf8", (err, data) => {
-    if (err) {
-      return res.status(500).json({ error: "Could not read data" });
-    }
-
-    const messages = JSON.parse(data || "[]");
-    messages.push(newMessage);
-
-    fs.writeFile("messages.json", JSON.stringify(messages, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ error: "Could not save message" });
-      }
-
-      res.status(200).json({ success: true, message: "Message saved successfully!" });
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: lineItems,
+      success_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
     });
-  });
+
+    res.status(200).json({ url: session.url });
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.listen(5000, () => console.log("Server running on http://localhost:5000"));
