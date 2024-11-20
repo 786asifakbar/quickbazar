@@ -15,12 +15,14 @@ import Checkout from './pages/Checkout';
 import NotFound from './pages/NotFound';
 import { AuthProvider } from './context/AuthContext';
 import ProductPage from './pages/ProductPage';
+import { CartProvider } from "./context/CartContext";
 import Footer from './components/Footer';
 
 
 function App() {
   return (
     <AuthProvider>
+    <CartProvider> 
       <Router>
       <Header />
         <Routes>
@@ -35,11 +37,13 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} /> 
           <Route path="/cart" element={<Cart />} /> 
+          
           <Route path="/checkout" element={<Checkout />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }
