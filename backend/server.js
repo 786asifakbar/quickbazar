@@ -1,16 +1,43 @@
 const express = require("express");
-const cors = require("cors");  // Enable Cross-Origin Resource Sharing (CORS)
-const productsRouter = require("./routes/products"); // Import product routes
-
+const fs = require("fs");
+const cors = require("cors");
 const app = express();
-const port = 5000;
+const PORT = 5000;
 
-// Enable CORS
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Use the products route for API requests
-app.use("/api", productsRouter);
+// POST route to handle form submissions
+app.post("/api/contact", (req, res) => {
+  const { name, email, message } = req.body;
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+
+  // Save data to a file (for demonstration purposes)
+  const newMessage = { name, email, message, date: new Date().toISOString() };
+
+  fs.readFile("messages.json", "utf8", (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: "Could not read data" });
+    }
+
+    const messages = JSON.parse(data || "[]");
+    messages.push(newMessage);
+
+    fs.writeFile("messages.json", JSON.stringify(messages, null, 2), (err) => {
+      if (err) {
+        return res.status(500).json({ error: "Could not save message" });
+      }
+
+      res.status(200).json({ success: true, message: "Message saved successfully!" });
+    });
+  });
+});
+
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
