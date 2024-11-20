@@ -24,7 +24,7 @@ const Header = () => {
           <img 
             src="/logo.png" 
             alt="QuickBazar Logo" 
-            className="w-28 md:w-40" // Adjust the size for smaller and larger screens
+            className="w-20 md:w-24" // Adjust the size for smaller and larger screens
           />
         </Link>
 

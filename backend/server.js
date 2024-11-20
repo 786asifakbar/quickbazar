@@ -1,11 +1,16 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");  // Enable Cross-Origin Resource Sharing (CORS)
+const productsRouter = require("./routes/products"); // Import product routes
+
 const app = express();
-const productRoutes = require('./routes/productRoutes');
+const port = 5000;
 
-app.use(express.json());
-app.use('/api/products', productRoutes);
+// Enable CORS
+app.use(cors());
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Use the products route for API requests
+app.use("/api", productsRouter);
+
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });
